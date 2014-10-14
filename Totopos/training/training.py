@@ -46,7 +46,8 @@ class training():
             distanceDecay = (radius - nodeDistance) / radius
             affectingWeight = self.mainSampleDict[sampleNode_id]['vector'] - self.mainNodesDict[selectedNode_id]['vector']
             self.mainNodesDict[node]['vector'] = self.mainNodesDict[node]['vector'] + distanceDecay*affectingWeight
-            self.mainNodesDict[node]['label'] = 'Empty'
+            self.mainNodesDict[node]['label'] = '0'
+            self.mainNodesDict[node]['perturb'] += 1
 
         map(pertubationThis_m , affectedNode_l)
 
@@ -103,6 +104,8 @@ class training():
         trainingOutput_F = open(trainingOutputFile , 'w')
         trainingOutput_F.write('Iteration\tPercentage Difference\tRadius\n')
 
+        writeBuffer = ''
+
         while irr <= self.config_f.maxTrainingIteration and meanPercentageDiff > self.config_f.minPercentDiffToStopTrain and trainingOutput_F:
 
             # pick randomly sample
@@ -119,18 +122,21 @@ class training():
             #radius = self.giveElipseRadius(percentageDiff)
             radius = self.giveLinerRadius(irr)
 
-            #change the selectNode with the smallest diff
-            self.mainNodesDict[smallestDiffNode_id]['vector'] = self.mainSampleDict[sample_id]['vector']
-            self.mainNodesDict[smallestDiffNode_id]['label'] = self.mainSampleDict[sample_id]['label']
-
             #affected nodes
             affectedNodes_l = self.nodeselection_f.giveNodeInRadius(smallestDiffNode_id,radius)
             #changing the neighbour vector weight
             if radius > 1:
                 self.changeWeightVector(affectedNodes_l, smallestDiffNode_id , sample_id , radius)
+
+            #change the selectNode with the smallest diff
+            self.mainNodesDict[smallestDiffNode_id]['vector'] = self.mainSampleDict[sample_id]['vector']
+            self.mainNodesDict[smallestDiffNode_id]['label'] = self.mainSampleDict[sample_id]['label']
+            self.mainNodesDict[smallestDiffNode_id]['picked'] += 1
+
             percentageDiff = percentageDiff * 100
-            self.logger.info('Iteration:%s, Percentage Differences:%.3f ,Radius:%s' % (irr, percentageDiff , radius))
-            trainingOutput_F.write('%s,\t%.3f,\t%s\n' % (irr, percentageDiff , radius))
+            #self.logger.info('Iteration:%s, Percentage Differences:%.3f ,Radius:%s' % (irr, percentageDiff , radius))
+            #trainingOutput_F.write('%s,\t%.3f,\t%s\n' % (irr, percentageDiff , radius))
+            writeBuffer += '%s,\t%.3f,\t%s\n' % (irr, percentageDiff , radius)
 
             #sleep function
             if irr % self.config_f.sleepAtIteration == 0:
@@ -138,7 +144,11 @@ class training():
                     meanPercentageDiff = mean(percentageDiff_l)
                     percentageDiff_l=[]
 
+                print 'Iteration : ' , irr
+                trainingOutput_F.write(writeBuffer)
+                writeBuffer = ''
                 self.draw_f.textDrawMainNodes()
+
             irr += 1
 
         trainingOutput_F.close()

@@ -31,7 +31,8 @@ class shape():
         _i = 0
 
         for position in nodePosition:
-            self.nodes_dict[_i] = {'position' : position , 'initialvector' : None, 'label': 'Empty' , 'vector':None , 'popularity' : 0}
+            self.nodes_dict[_i] = {'position' : position , 'initialvector' : None, 'label': '0' , 'vector':None , 'popularity' : 0,
+                                    'picked' : 0 , 'perturb' : 0 }
             _i += 1
 
         self.logger.debug('Finish rectangular creating nodes')

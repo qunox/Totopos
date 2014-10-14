@@ -31,9 +31,9 @@ class config():
         self.mainNodeDict = None
         self.initialRadius = 0.9
         self.minPercentDiffToStopTrain = 0.001
-        self.maxTrainingIteration = 100000
+        self.maxTrainingIteration = 1000
 
-        self.sleepAtIteration = 10000
+        self.sleepAtIteration = 100
         self.decayRate = (self.maxTrainingIteration - 0.1*self.maxTrainingIteration) / 100
 
         #General
