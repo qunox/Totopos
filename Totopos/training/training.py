@@ -25,12 +25,12 @@ class training():
         self.mainNodesDict = self.config_f.mainNodesDict
         self.draw_f = draw(self.mainNodesDict , self.mainSampleDict , self.config_f)
 
-        self.LinearRadiusGradient = (1 - self.config_f.effRadius) / (0.8*self.config_f.maxTrainingIteration)
-
         if self.config_f.nodesWidth <= self.config_f.nodesHeight:
             self.config_f.effRadius = self.config_f.initialRadius * self.config_f.nodesWidth
         else:
             self.config_f.effRadius = self.config_f.initialRadius * self.config_f.nodesHeight
+
+        self.LinearRadiusGradient = (1 - self.config_f.effRadius) / (0.8*self.config_f.maxTrainingIteration)
 
 
     def changeWeightVector(self , affectedNode_l, selectedNode_id, sampleNode_id, radius):
